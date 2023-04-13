@@ -15,7 +15,7 @@ class User(Base):
     email = Column(String(256))
     user_name = Column(String(256))
     password = Column(String(256))
-    favorites = relationship('Favorites')
+    favorites = relationship('Favorites', backref="user", lazy=True)
 
 class Favorites(Base):
     __tablename__ = 'Favorites'
@@ -24,7 +24,10 @@ class Favorites(Base):
     fave_id = Column(Integer)
     item_type = Column(String(256))
     name = Column(String(256))
-        
+    characters = relationship('Characters', backref="favorites", lazy=True)
+    vehicles = relationship('Vehicles', backref="favorites", lazy=True)
+    planets = relationship('Planets', backref="favorites", lazy=True)
+    starships = relationship('Starships', backref="favorites", lazy=True)
 
 class Character(Base):
     __tablename__ = 'Character'

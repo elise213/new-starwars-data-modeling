@@ -25,9 +25,13 @@ class Favorites(Base):
     item_type = Column(String(256))
     name = Column(String(256))
     characters = relationship('Characters', backref="favorites", lazy=True)
+    characters_id = Column(Integer, ForeignKey("characterss.id"))
     vehicles = relationship('Vehicles', backref="favorites", lazy=True)
+    vehicles_id = Column(Integer, ForeignKey("vehicles.id"))
     planets = relationship('Planets', backref="favorites", lazy=True)
+    planets_id = Column(Integer, ForeignKey("planets.id"))
     starships = relationship('Starships', backref="favorites", lazy=True)
+    starships_id = Column(Integer, ForeignKey("starships.id"))
 
 class Character(Base):
     __tablename__ = 'Character'

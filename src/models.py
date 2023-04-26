@@ -1,12 +1,37 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
 Base = declarative_base()
+
+favorite_characters = Table(
+    "favorite_characters",
+     Base.metadata,
+    Column("user_id", ForeignKey("User.id")),
+    Column("character_id", ForeignKey("Character.id")),
+)
+favorite_planets = Table(
+    "favorite_planets",
+     Base.metadata,
+    Column("user_id", ForeignKey("User.id")),
+    Column("planet_id", ForeignKey("Planet.id")),
+)
+favorite_vehicles = Table(
+    "favorite_vehicles",
+     Base.metadata,
+    Column("user_id", ForeignKey("User.id")),
+    Column("vehicle_id", ForeignKey("Vehicle.id")),
+)
+favorite_starships= Table(
+    "favorite_starships",
+     Base.metadata,
+    Column("user_id", ForeignKey("User.id")),
+    Column("starship_id", ForeignKey("Starship.id")),
+)
 
 class User(Base):
     __tablename__ ='User'
@@ -15,23 +40,10 @@ class User(Base):
     email = Column(String(256))
     user_name = Column(String(256))
     password = Column(String(256))
-    favorites = relationship('Favorites', backref="user", lazy=True)
-
-class Favorites(Base):
-    __tablename__ = 'Favorites'
-    id = Column(Integer, primary_key = True, unique = True)
-    user_id = Column(Integer, ForeignKey('User.id'))
-    fave_id = Column(Integer)
-    item_type = Column(String(256))
-    name = Column(String(256))
-    characters = relationship('Characters', backref="favorites", lazy=True)
-    characters_id = Column(Integer, ForeignKey("characterss.id"))
-    vehicles = relationship('Vehicles', backref="favorites", lazy=True)
-    vehicles_id = Column(Integer, ForeignKey("vehicles.id"))
-    planets = relationship('Planets', backref="favorites", lazy=True)
-    planets_id = Column(Integer, ForeignKey("planets.id"))
-    starships = relationship('Starships', backref="favorites", lazy=True)
-    starships_id = Column(Integer, ForeignKey("starships.id"))
+    favorite_characters=relationship('Character',secondary="favorite_characters", backref="user_characters", lazy=True)
+    favorite_planets=relationship('Planet',secondary="favorite_planets", backref="user_planets", lazy=True)
+    favorite_vehicles=relationship('Vehicle',secondary="favorite_vehicles", backref="user_vehicles", lazy=True)
+    favorite_starships=relationship('Starship',secondary="favorite_starships", backref="user_starships", lazy=True)
 
 class Character(Base):
     __tablename__ = 'Character'
@@ -49,8 +61,8 @@ class Character(Base):
     def to_dict(self):
         return {}
 
-class Starships(Base):
-    __tablename__ = 'Starships'
+class Starship(Base):
+    __tablename__ = 'Starship'
     id = Column(Integer, primary_key=True, unique = True)
     name = Column(String(256))
     model = Column(String(256)) 
@@ -68,8 +80,8 @@ class Starships(Base):
     def to_dict(self):
         return {}
 
-class Vehicles(Base):
-    __tablename__ = "Vehicles"
+class Vehicle(Base):
+    __tablename__ = "Vehicle"
     id = Column(Integer, primary_key = True, unique = True)
     name = Column(String(256))
     model = Column(String(256))
@@ -85,8 +97,8 @@ class Vehicles(Base):
     def to_dict(self):
         return {}
 
-class Planets(Base):
-    __tablename__ = "Planets"
+class Planet(Base):
+    __tablename__ = "Planet"
     id = Column(Integer, primary_key = True, unique = True)
     name = Column(String(256))
     diameter = Column(Integer)
